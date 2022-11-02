@@ -1,5 +1,7 @@
 import ForecastIcon from './ForecastIcon';
-import {getIconNameById} from '../utils/weatherIcons';
+import {getIconNameById} from '../utils/weather-icons';
+import RotatableArrow from './RotatableArrow';
+import {calculateWindSpeedInBeaufort} from '../utils/wind-in-beaufort';
 
 const TodayWidgetHeaderRow = props => {
   return (
@@ -26,7 +28,10 @@ const TodayWidgetHeaderRow = props => {
         </p>
         <p className="text-white">
             <span className="flex items-center space-x-2">
-              {/*{// todo: arrow and windspeed }*/}
+              <RotatableArrow color={'#FFF'}
+                              degrees={props.forecastData.current.wind_deg}/>
+              <span>{calculateWindSpeedInBeaufort(
+                  props.forecastData.current.wind_speed)} Bft</span>
             </span>
         </p>
       </div>

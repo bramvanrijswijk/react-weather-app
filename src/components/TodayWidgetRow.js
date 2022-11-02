@@ -1,5 +1,8 @@
 import ForecastIcon from './ForecastIcon';
-import {getIconNameById} from '../utils/weatherIcons';
+import RotatableArrow from './RotatableArrow';
+import {getIconNameById} from '../utils/weather-icons';
+import {calculateWindSpeedInBeaufort} from '../utils/wind-in-beaufort';
+import {formatTime} from '../utils/time-formatter';
 
 const TodayWidgetRow = props => {
   return (
@@ -8,11 +11,7 @@ const TodayWidgetRow = props => {
         <p style={{minWidth: '100px', maxWidth: '100px'}}>
           <time
               className="flex items-center justify-center bg-gray-100 font-semibold px-3 py-1">
-            {
-              new Date(props.hourlyData.dt * 1000)
-                  .toLocaleTimeString('nl-NL',
-                      {hour: '2-digit', minute: '2-digit'})
-            }
+            {formatTime(props.hourlyData.dt)}
           </time>
         </p>
         <p>
@@ -29,7 +28,10 @@ const TodayWidgetRow = props => {
         </p>
         <p>
             <span className="flex items-center space-x-2">
-              {/*{// todo: arrow and windspeed }*/}
+              <RotatableArrow color={'#000'}
+                              degrees={props.hourlyData.wind_deg}/>
+              <span>{calculateWindSpeedInBeaufort(
+                  props.hourlyData.wind_speed)} Bft</span>
             </span>
         </p>
       </div>
