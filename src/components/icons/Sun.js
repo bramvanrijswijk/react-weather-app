@@ -3,8 +3,8 @@ const Sun = props => {
       <svg
           id="Layer_1"
           version="1.1"
-          width="240"
-          height="50"
+          width={props.svgWidth}
+          height={props.svgHeight}
           viewBox="0 0 100 100"
       >
         <path

@@ -16,9 +16,11 @@ const ForecastIcon = props => {
   };
 
   const Icon = iconMapper[props.icon];
-  
+
   return <Icon
       color={props.color ?? '#FFF'}
+      svgWidth={props.svgWidth ?? '50'}
+      svgHeight={props.svgHeight ?? '50'}
       style={{
         maxWidth: '50px',
         minWidth: '50px',

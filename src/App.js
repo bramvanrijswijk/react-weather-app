@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react';
 import Header from './components/Header';
 import TodayWidget from './components/TodayWidget';
+import WeekOverviewWidget from './components/WeekOverviewWidget';
 
 const App = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
@@ -45,16 +46,25 @@ const App = () => {
   }, []);
 
   return (
-      <div className="flex justify-center w-full">
+      <div
+          className="bg-gray-50 min-h-screen text-base flex justify-center w-full">
         <Header/>
-        <main className="w-full 2xl:w-11/12 py-10 px-4 xl:px-8 2xl:px-16 mt-16">
+        <main className="w-full py-10 px-8 mt-16">
           {!isLoadingWeather && (
               <div
                   className="flex flex-col xl:flex-row justify-center w-full xl:space-x-12 space-y-12 xl:space-y-0">
                 <section
-                    className="flex flex-col w-full xl:w-4/12 overflow-hidden">
+                    className="flex flex-col w-full xl:w-5/12 overflow-hidden">
                   <TodayWidget forecastData={weatherData}
                                placeName={placeName}/>
+                </section>
+                <section className="flex flex-col w-full xl:w-7/12">
+                  <div>
+                    <h2 className="text-2xl font-semibold">
+                      Verwachting komende dagen in {placeName}
+                    </h2>
+                  </div>
+                  <WeekOverviewWidget forecastData={weatherData}/>
                 </section>
               </div>
           )}
