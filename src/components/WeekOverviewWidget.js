@@ -4,6 +4,11 @@ import {getIconNameById} from '../utils/weather-icons';
 import {calculateWindSpeedInBeaufort} from '../utils/wind-in-beaufort';
 import WeatherChart from './Chart';
 import {useEffect, useState} from 'react';
+import {
+  getDayNumber,
+  getShortDayInHumanLanguage,
+  getShortMonthInHumanLanguage,
+} from '../utils/date-formatter';
 
 const WeekOverviewWidget = props => {
   const [hasErrorLoadingChart, setHasErrorLoadingChart] = useState(false);
@@ -41,16 +46,12 @@ const WeekOverviewWidget = props => {
                   (
                       <div key={index} className="flex flex-col items-center">
                         <div className="flex flex-col items-center">
-                          <span>{
-                            new Date(forecastDailyData.dt * 1000)
-                                .toLocaleDateString('nl-NL', {weekday: 'short'})
-                          }</span>
+                          <span>{getShortDayInHumanLanguage(
+                              forecastDailyData.dt)}</span>
                           <span className="flex space-x-1 font-semibold">
-                            <span>{new Date(
-                                forecastDailyData.dt * 1000).getDate()}</span>
-                            <span>{new Date(
-                                forecastDailyData.dt * 1000).toLocaleDateString(
-                                'nl-NL', {month: 'short'})}</span>
+                            <span>{getDayNumber(forecastDailyData.dt)}</span>
+                            <span>{getShortMonthInHumanLanguage(
+                                forecastDailyData.dt)}</span>
                         </span>
                         </div>
                         <div>
