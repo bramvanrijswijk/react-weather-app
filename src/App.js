@@ -20,6 +20,29 @@ const App = () => {
     lng: null,
   });
 
+  const loadSandboxEnvironment = () => {
+    setCoordinates({
+      lat: '52.1092717',
+      lng: '5.1809676',
+    });
+
+    setPlaceName('De Bilt');
+
+    fetchMockData((mockData) => {
+      // The API also included today in the daily results, which is irrelevant for our case
+      mockData.daily.shift();
+      mockData.hourly.shift();
+
+      setWeatherData({
+        daily: mockData.daily,
+        current: mockData.current,
+        hourly: mockData.hourly,
+      });
+
+      setIsLoadingWeather(false);
+    });
+  };
+
   const fetchMockData = (callback) => {
     const mockedForecastData = require('./mock_data.json');
     return callback(mockedForecastData);
@@ -28,6 +51,7 @@ const App = () => {
   const fetchCurrentCoordinates = () => {
     if (!navigator.geolocation) {
       setHasNoCoordinatesError(true);
+      setIsLoadingCoordinates(false);
       return;
     }
 
@@ -46,7 +70,7 @@ const App = () => {
         });
   };
 
-  const getPlaceNameByCoordinates = () => {
+  const setPlaceNameByCoordinates = () => {
     fetch(
         `https://eu1.locationiq.com/v1/reverse.php?key=${process.env.REACT_APP_LOCATION_IQ_KEY}&lat=${coordinates.lat}&lon=${coordinates.lng}&format=json`)
         .then(response => response.json())
@@ -68,65 +92,50 @@ const App = () => {
       return;
     }
 
-    getPlaceNameByCoordinates();
+    setPlaceNameByCoordinates();
 
-    if (process.env.NODE_ENV === 'production') {
-      if (hasNoCoordinatesError) {
-        console.error('Has no coordinates.');
-        return;
-      }
-
-      const url = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lng}&exclude=minutely&units=metric&lang=nl&appid=${process.env.REACT_APP_OPENWEATHERMAP_KEY}`;
-
-      fetch(url)
-          .then(response => {
-            if (!response.ok) {
-              setApiError(
-                  'Door een storing is het niet mogelijk om de weersvoorspelling te bekijken. Probeer het straks nogmaals. Excuses voor het ongemak.');
-
-              throw Error(response.statusText);
-            }
-            return response;
-          })
-          .then(response => response.json())
-          .then(response => {
-            // The API includes today and the current hour, which is irrelevant for our case.
-            response.daily.shift();
-            response.hourly.shift();
-
-            setWeatherData({
-              daily: response.daily,
-              current: response.current,
-              hourly: response.hourly,
-            });
-          })
-          .catch(error => console.log(error))
-          .finally(() => {
-            setIsLoadingWeather(false);
-          });
-
+    if (hasNoCoordinatesError) {
+      console.error('Has no coordinates.');
       return;
     }
 
-    fetchMockData((mockData) => {
-      // The API also included today in the daily results, which is irrelevant for our case
-      mockData.daily.shift();
-      mockData.hourly.shift();
+    const url = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lng}&exclude=minutely&units=metric&lang=nl&appid=${process.env.REACT_APP_OPENWEATHERMAP_KEY}`;
 
-      setPlaceName('De Bilt');
+    fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            setApiError(
+                'Door een storing is het niet mogelijk om de weersvoorspelling te bekijken. Probeer het straks nogmaals. Excuses voor het ongemak.');
 
-      setWeatherData({
-        daily: mockData.daily,
-        current: mockData.current,
-        hourly: mockData.hourly,
-      });
+            throw Error(response.statusText);
+          }
+          return response;
+        })
+        .then(response => response.json())
+        .then(response => {
+          // The API includes today and the current hour, which is irrelevant for our case.
+          response.daily.shift();
+          response.hourly.shift();
 
-      setIsLoadingWeather(false);
-    });
+          setWeatherData({
+            daily: response.daily,
+            current: response.current,
+            hourly: response.hourly,
+          });
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+          setIsLoadingWeather(false);
+        });
   };
 
   useEffect(() => {
-    fetchWeatherData();
+    if (process.env.NODE_ENV === 'production') {
+      fetchWeatherData();
+      return;
+    }
+
+    loadSandboxEnvironment();
   }, [isLoadingCoordinates]);
 
   return (
