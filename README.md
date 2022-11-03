@@ -9,3 +9,5 @@ file `src/mock_data.json`.
 
 To load real data based on your coordinates use `npm run production` and then `serve -s build`. Please make sure you
 have **serve** installed. If not, run `npm install -g serve`.
+
+![Screenshot of the app](./src/brams-weather-screenshot.png)
