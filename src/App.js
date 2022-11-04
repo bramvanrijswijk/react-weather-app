@@ -2,6 +2,7 @@ import {useEffect, useState} from 'react';
 import Header from './components/Header';
 import TodayWidget from './components/TodayWidget';
 import WeekOverviewWidget from './components/WeekOverviewWidget';
+import {getWeatherData} from './services/weather-service';
 
 const App = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
@@ -85,7 +86,7 @@ const App = () => {
         });
   };
 
-  const fetchWeatherData = () => {
+  const fetchWeatherData = async () => {
     fetchCurrentCoordinates();
 
     if (isLoadingCoordinates) {
@@ -95,43 +96,24 @@ const App = () => {
     setPlaceNameByCoordinates();
 
     if (hasNoCoordinatesError) {
-      console.error('Has no coordinates.');
       return;
     }
 
-    const url = `https://cors-anywhere.herokuapp.com/https://api.openweathermap.org/data/2.5/onecall?lat=${coordinates.lat}&lon=${coordinates.lng}&exclude=minutely&units=metric&lang=nl&appid=${process.env.REACT_APP_OPENWEATHERMAP_KEY}`;
-
-    fetch(url)
-        .then(response => {
-          if (!response.ok) {
-            setApiError(
-                'Door een storing is het niet mogelijk om de weersvoorspelling te bekijken. Probeer het straks nogmaals. Excuses voor het ongemak.');
-
-            throw Error(response.statusText);
-          }
-          return response;
-        })
-        .then(response => response.json())
-        .then(response => {
-          // The API includes today and the current hour, which is irrelevant for our case.
-          response.daily.shift();
-          response.hourly.shift();
-
-          setWeatherData({
-            daily: response.daily,
-            current: response.current,
-            hourly: response.hourly,
-          });
-        })
-        .catch(error => console.log(error))
-        .finally(() => {
-          setIsLoadingWeather(false);
-        });
+    try {
+      return await getWeatherData(coordinates);
+    } catch (error) {
+      setApiError(error.message);
+    } finally {
+      setIsLoadingWeather(false);
+    }
   };
 
   useEffect(() => {
     if (process.env.NODE_ENV === 'production') {
-      fetchWeatherData();
+      fetchWeatherData().then((weatherData) => {
+        setWeatherData(weatherData);
+      });
+      
       return;
     }
 
