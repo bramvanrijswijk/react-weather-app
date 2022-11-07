@@ -2,12 +2,12 @@ import {useEffect, useState} from 'react';
 import Header from './components/Header';
 import TodayWidget from './components/TodayWidget';
 import WeekOverviewWidget from './components/WeekOverviewWidget';
-import {getWeatherData} from './services/weather-service';
+import WeatherService from './services/weather-service';
 
 const App = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
   const [apiError, setApiError] = useState('');
-  const [hasNoCoordinatesError, setHasNoCoordinatesError] = useState(false);
+  const [hasCoordinatesError, setHasCoordinatesError] = useState(true);
   const [isLoadingCoordinates, setIsLoadingCoordinates] = useState(true);
 
   const [weatherData, setWeatherData] = useState({
@@ -49,58 +49,32 @@ const App = () => {
     return callback(mockedForecastData);
   };
 
-  const fetchCurrentCoordinates = () => {
-    if (!navigator.geolocation) {
-      setHasNoCoordinatesError(true);
-      setIsLoadingCoordinates(false);
-      return;
-    }
-
-    navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setCoordinates({
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          });
-
-          setIsLoadingCoordinates(false);
-        },
-        (error) => {
-          console.error(error);
-          setIsLoadingCoordinates(false);
-        });
-  };
-
-  const setPlaceNameByCoordinates = () => {
-    fetch(
-        `https://eu1.locationiq.com/v1/reverse.php?key=${process.env.REACT_APP_LOCATION_IQ_KEY}&lat=${coordinates.lat}&lon=${coordinates.lng}&format=json`)
-        .then(response => response.json())
-        .then(response => {
-          setPlaceName(response.address.city ?? response.address.town);
-        })
-        .catch(errorMessage => {
-          setPlaceName('Onbekend');
-
-          console.info(`Location was set to default: 'Onbekend'.`,
-              errorMessage);
-        });
-  };
-
   const fetchWeatherData = async () => {
-    fetchCurrentCoordinates();
+    const weatherService = new WeatherService();
 
-    if (isLoadingCoordinates) {
+    weatherService.fetchCurrentCoordinates()
+        .then(coordinates => {
+          setCoordinates(coordinates);
+          setHasCoordinatesError(false);
+        })
+        .catch(error => {
+          setHasCoordinatesError(true);
+          setApiError(error.message);
+          setIsLoadingWeather(false);
+        })
+        .finally(() => setIsLoadingCoordinates(false));
+
+    if (hasCoordinatesError) {
       return;
     }
 
-    setPlaceNameByCoordinates();
+    const placeName = await weatherService.getPlaceNameByCoordinates(
+        coordinates);
 
-    if (hasNoCoordinatesError) {
-      return;
-    }
+    setPlaceName(placeName);
 
     try {
-      return await getWeatherData(coordinates);
+      return await weatherService.getWeatherData(coordinates);
     } catch (error) {
       setApiError(error.message);
     } finally {
@@ -113,7 +87,7 @@ const App = () => {
       fetchWeatherData().then((weatherData) => {
         setWeatherData(weatherData);
       });
-      
+
       return;
     }
 
@@ -134,7 +108,9 @@ const App = () => {
               <div className="text-center">
                 <p>{apiError}</p>
                 <small>PS: Heb je wel een sessie gestart via
-                  https://cors-anywhere.herokuapp.com?</small>
+                  <a className="underline pl-1"
+                     href="https://cors-anywhere.herokuapp.com"
+                     target="_blank">https://cors-anywhere.herokuapp.com</a>?</small>
               </div>
           )}
           {!isLoadingWeather && apiError.length === 0 && (
