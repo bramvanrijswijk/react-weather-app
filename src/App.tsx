@@ -25,8 +25,8 @@ const App = () => {
 
   const loadSandboxEnvironment = () => {
     setCoordinates({
-      lat: '52.1092717',
-      lng: '5.1809676',
+      lat: 52.1092717,
+      lng: 5.1809676,
     });
 
     setPlaceName('De Bilt');
@@ -55,7 +55,7 @@ const App = () => {
     const weatherService = new WeatherService();
 
     weatherService.fetchCurrentCoordinates()
-      .then(coordinates => {
+      .then((coordinates: Coordinates) => {
         setCoordinates(coordinates);
         setHasCoordinatesError(false);
       })
@@ -70,10 +70,14 @@ const App = () => {
       return;
     }
 
-    const placeName = await weatherService.getPlaceNameByCoordinates(
-      coordinates);
+    try {
+      const placeName = await weatherService.getPlaceNameByCoordinates(
+        coordinates);
 
-    setPlaceName(placeName);
+      setPlaceName(placeName);
+    } catch (e: unknown) {
+      setPlaceName('Onbekend');
+    }
 
     try {
       return await weatherService.getWeatherData(coordinates);
