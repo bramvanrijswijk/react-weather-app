@@ -13,13 +13,12 @@ type ChartBody = [number, number, string];
 const WeekOverviewWidget = (props: { forecastData: WeatherData }) => {
   const [hasErrorLoadingChart, setHasErrorLoadingChart] = useState<boolean>(false);
 
-  const chartData: [ChartHeader, ...ChartBody] | any[] = [];
+  let chartData: [ChartHeader, ...ChartBody[]] = [
+    ['Dag', 'Temperatuur', {role: 'annotation', type: 'string'}]
+  ];
 
   const transformDailyDataToGraphData = () => {
     if (Object.keys(props.forecastData.daily).length > 0) {
-      const header: ChartHeader = ['Dag', 'Temperatuur', {role: 'annotation', type: 'string'}];
-      chartData.push(header);
-
       props.forecastData.daily.forEach((day: DailyWeatherDetails, index: number) => {
         let chartBody: ChartBody = [
           index + 1, // index for the chart
@@ -29,9 +28,7 @@ const WeekOverviewWidget = (props: { forecastData: WeatherData }) => {
 
         chartData.push(chartBody);
       });
-
-      console.log(chartData)
-
+      
       return;
     }
 
