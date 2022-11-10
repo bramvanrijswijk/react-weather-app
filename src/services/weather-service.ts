@@ -1,5 +1,6 @@
 import {Coordinates} from "../interfaces/coordinates.interface";
 import {LocationIQ} from "../interfaces/locationiq.interface";
+import {WeatherData} from "../interfaces/weather-data.interface";
 
 class WeatherService {
   openWeatherMapApiUrl = 'https://api.openweathermap.org/data/2.5/onecall';
@@ -18,7 +19,7 @@ class WeatherService {
         return response;
       })
       .then(response => response.json())
-      .then(response => {
+      .then((response: WeatherData) => {
         // The API includes today and the current hour, which is irrelevant for our case.
         response.daily.shift();
         response.hourly.shift();
