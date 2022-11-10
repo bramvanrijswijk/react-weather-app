@@ -2,8 +2,8 @@ I've created this simple weather app to learn React.
 
 ### Sandbox
 
-The sandbox will be launched when using `npm run install && npm run start`. The data which is used is from the JSON
-file `src/mock_data.json`.
+The sandbox will be launched with `npm run install && npm run start`. The JSON file `src/mock_data.json` is used
+as data source, which is a production copy.
 
 ### Production
 
