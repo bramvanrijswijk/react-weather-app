@@ -4,7 +4,7 @@ import TodayWidget from './components/TodayWidget';
 import WeekOverviewWidget from './components/WeekOverviewWidget';
 import WeatherService from './services/weather-service';
 import {Coordinates} from "./interfaces/coordinates.interface";
-import {WeatherData} from "./interfaces/weather-data.interface";
+import {CurrentWeatherDetails, WeatherData} from "./interfaces/weather-data.interface";
 
 const App = () => {
   const [isLoadingWeather, setIsLoadingWeather] = useState(true);
@@ -14,7 +14,7 @@ const App = () => {
 
   const [weatherData, setWeatherData] = useState<WeatherData>({
     daily: [],
-    current: [],
+    current: {} as CurrentWeatherDetails,
     hourly: [],
   });
   const [placeName, setPlaceName] = useState('');

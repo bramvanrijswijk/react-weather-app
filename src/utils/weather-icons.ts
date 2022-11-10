@@ -1,5 +1,9 @@
-export const getIconNameById = (iconId) => {
-  const forecastIconMapper = {
+interface IconMapper {
+  [iconId: string]: string;
+}
+
+export const getIconNameById = (iconId: string) => {
+  const forecastIconMapper: IconMapper = {
     '01': 'Sun', // clear sky
     '02': 'Cloud', // few clouds
     '03': 'Cloud', // scattered clouds

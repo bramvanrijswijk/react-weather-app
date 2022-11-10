@@ -62,7 +62,7 @@ export interface DailyWeatherDetails extends BasicWeather {
 }
 
 export interface WeatherData {
-  current: CurrentWeatherDetails[];
+  current: CurrentWeatherDetails;
   hourly: HourlyWeatherDetails[];
   daily: DailyWeatherDetails[];
 }

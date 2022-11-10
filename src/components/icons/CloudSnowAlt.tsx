@@ -1,17 +1,19 @@
-const CloudSnowAlt = props => {
+import {Icon} from "../../interfaces/icon.interface";
+
+const CloudSnowAlt = (props: Icon) => {
   return (
-      <svg
-          id="Layer_1"
-          version="1.1"
-          width={props.svgWidth}
-          height={props.svgHeight}
-          viewBox="0 0 100 100"
-      >
-        <path
-            fill={props.color}
-            fillRule="evenodd"
-            clipRule="evenodd"
-            d="M61.998,65.461v-4.082c3.448-0.891,6-4.012,6-7.738
+    <svg
+      id="Layer_1"
+      version="1.1"
+      width={props.svgWidth}
+      height={props.svgHeight}
+      viewBox="0 0 100 100"
+    >
+      <path
+        fill={props.color}
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M61.998,65.461v-4.082c3.448-0.891,6-4.012,6-7.738
 	c0-4.417-3.582-7.999-7.999-7.999c-1.601,0-3.084,0.48-4.334,1.291c-1.231-5.317-5.973-9.291-11.664-9.291
 	c-6.627,0-11.999,5.373-11.999,12c0,4.438,2.417,8.305,5.999,10.379v4.445c-5.86-2.375-9.998-8.113-9.998-14.825
 	c0-8.835,7.162-15.999,15.998-15.999c6.004,0,11.229,3.312,13.965,8.204c0.664-0.113,1.336-0.205,2.033-0.205
@@ -22,8 +24,8 @@ const CloudSnowAlt = props => {
 	v-2.535l-2.195,1.268c-0.957,0.553-2.18,0.225-2.732-0.73c-0.552-0.957-0.225-2.18,0.732-2.732L46,63.641l-2.195-1.268
 	C42.848,61.82,42.521,60.598,43.072,59.641z M50,65.641c1.104,0,2-0.896,2-2c0-1.105-0.896-2-2-2s-2,0.895-2,2
 	C48,64.744,48.896,65.641,50,65.641z"
-        />
-      </svg>
+      />
+    </svg>
   );
 };
 
