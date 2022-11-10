@@ -1,8 +1,9 @@
-import {Chart} from 'react-google-charts';
+import {Chart as ReactGoogleChart} from 'react-google-charts';
+import {Chart} from "../interfaces/chart.interface";
 
-const WeatherChart = props => {
+const WeatherChart = (props: { chartData: Chart }) => {
   const options = {
-    legend: {position: 'none'},
+    legend: 'none',
     chartArea: {
       top: 10,
       right: '8%',
@@ -11,7 +12,7 @@ const WeatherChart = props => {
       width: '100%',
       height: '100%',
     },
-    backgroundColor: {fill: 'transparent'},
+    backgroundColor: 'transparent',
     vAxis: {
       gridlines: {
         color: 'transparent',
@@ -41,8 +42,12 @@ const WeatherChart = props => {
   };
 
   return (
-      <Chart chartType={'LineChart'} options={options} data={props.chartData}
-             className={'absolute w-full'} style={{top: '200px', left: '5px'}}/>
+    <ReactGoogleChart
+      chartType={'LineChart'}
+      options={options}
+      data={props.chartData}
+      className={'absolute w-full'}
+      style={{top: '200px', left: '5px'}}/>
   );
 };
 

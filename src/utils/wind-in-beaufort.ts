@@ -1,12 +1,16 @@
-export const calculateWindSpeedInBeaufort = windSpeedInMetersPerSecond => {
+interface BeaufortMapper {
+  [beaufortIndex: string]: number;
+}
+
+export const calculateWindSpeedInBeaufort = (windSpeedInMetersPerSecond: number) => {
   const windSpeedInKilometersPerHour = Math.round(
-      windSpeedInMetersPerSecond * 3.6);
+    windSpeedInMetersPerSecond * 3.6);
 
   // 0 bft -> starts from a wind speed of 0 km/h
   // 1 bft -> starts from a wind speed of 2 km/h
   // 2 bft -> starts from a wind speed of 6 km/h
   // etc.
-  const beaufortMapper = {
+  const beaufortMapper: BeaufortMapper = {
     '0': 0,
     '1': 2,
     '2': 6,
@@ -29,7 +33,7 @@ export const calculateWindSpeedInBeaufort = windSpeedInMetersPerSecond => {
   let beaufort = 0;
   Object.values(beaufortMapper).some((minimumWindSpeed, index) => {
     if (windSpeedInKilometersPerHour >= minimumWindSpeed &&
-        windSpeedInKilometersPerHour < beaufortMapper[index + 1]) {
+      windSpeedInKilometersPerHour < beaufortMapper[index + 1]) {
       beaufort = index;
       return true;
     }
